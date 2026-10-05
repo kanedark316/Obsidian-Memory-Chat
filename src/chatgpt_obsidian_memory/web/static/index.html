@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ChatGPT → Obsidian Memory</title>
+  <style>
+    :root {
+      --bg: #f3efe6;
+      --ink: #1c1a17;
+      --muted: #5c564c;
+      --panel: #fffdf8;
+      --accent: #0f6b5c;
+      --accent-ink: #f7fffc;
+      --line: #d9d0c0;
+      --ok: #1f7a3f;
+      --err: #9b1c1c;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 10% 0%, #e7f2ee 0%, transparent 45%),
+        radial-gradient(circle at 90% 10%, #f7e8d4 0%, transparent 40%),
+        var(--bg);
+      min-height: 100vh;
+    }
+    main {
+      max-width: 880px;
+      margin: 0 auto;
+      padding: 2.5rem 1.25rem 4rem;
+    }
+    h1 {
+      font-family: "Fraunces", "Palatino Linotype", serif;
+      font-weight: 600;
+      font-size: clamp(1.8rem, 4vw, 2.6rem);
+      margin: 0 0 0.4rem;
+      letter-spacing: -0.02em;
+    }
+    .lede { color: var(--muted); margin: 0 0 1.5rem; max-width: 40rem; }
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 1.25rem;
+      margin-bottom: 1rem;
+    }
+    label { display: block; font-size: 0.85rem; margin-bottom: 0.35rem; color: var(--muted); }
+    input[type="text"], textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 0.7rem 0.8rem;
+      font: inherit;
+      background: #fff;
+      color: var(--ink);
+    }
+    textarea { min-height: 220px; resize: vertical; line-height: 1.45; }
+    .row { display: grid; gap: 0.85rem; margin-bottom: 0.85rem; }
+    @media (min-width: 640px) {
+      .row.two { grid-template-columns: 1.4fr 1fr; }
+    }
+    .actions { display: flex; flex-wrap: wrap; gap: 0.6rem; align-items: center; }
+    button {
+      border: 0;
+      border-radius: 999px;
+      padding: 0.7rem 1.15rem;
+      background: var(--accent);
+      color: var(--accent-ink);
+      font: inherit;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    button.secondary {
+      background: transparent;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+    }
+    button:disabled { opacity: 0.55; cursor: not-allowed; }
+    #drop {
+      border: 1.5px dashed var(--line);
+      border-radius: 12px;
+      padding: 1rem;
+      text-align: center;
+      color: var(--muted);
+      margin-bottom: 0.85rem;
+      background: #fcfaf5;
+    }
+    #drop.drag { border-color: var(--accent); color: var(--accent); background: #eef8f5; }
+    .status { min-height: 1.4rem; font-size: 0.92rem; }
+    .status.ok { color: var(--ok); }
+    .status.err { color: var(--err); }
+    .meta { font-size: 0.85rem; color: var(--muted); margin-bottom: 1rem; }
+    ul.notes { list-style: none; padding: 0; margin: 0; }
+    ul.notes li {
+      padding: 0.55rem 0;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+    ul.notes li span { color: var(--muted); font-size: 0.85rem; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>ChatGPT → Obsidian</h1>
+    <p class="lede">
+      Paste a chat, drop a text file, import a <strong>Share chat</strong> link
+      (⋯ → Share → Copy link), or use the browser extension on an open ChatGPT page.
+      No ChatGPT API keys — notes are written only into your local Obsidian vault.
+    </p>
+    <p class="meta" id="health">Checking local server…</p>
+
+    <section class="panel">
+      <h2 style="margin-top:0;font-size:1.1rem;">Share chat link</h2>
+      <p class="meta" style="margin-top:0">
+        In ChatGPT open the chat → ⋯ → Share → Copy link, then paste
+        <code>https://chatgpt.com/share/...</code> below.
+      </p>
+      <div class="row">
+        <div>
+          <label for="shareUrl">Share URL</label>
+          <input id="shareUrl" type="text" placeholder="https://chatgpt.com/share/…" />
+        </div>
+      </div>
+      <div class="actions">
+        <button id="importShare" type="button">Import share link</button>
+      </div>
+      <p class="status" id="shareStatus" aria-live="polite"></p>
+    </section>
+
+    <section class="panel">
+      <h2 style="margin-top:0;font-size:1.1rem;">Paste or drop</h2>
+      <div id="drop">Drop a .md or .txt file here</div>
+      <div class="row two">
+        <div>
+          <label for="title">Title</label>
+          <input id="title" type="text" placeholder="Optional — derived from first line if empty" />
+        </div>
+        <div>
+          <label for="tags">Tags (comma-separated)</label>
+          <input id="tags" type="text" placeholder="chatgpt, memory" />
+        </div>
+      </div>
+      <div class="row">
+        <div>
+          <label for="text">Chat text</label>
+          <textarea id="text" placeholder="Paste chat here. Role lines like You: / ChatGPT: or ## User work well."></textarea>
+        </div>
+      </div>
+      <div class="actions">
+        <button id="save" type="button">Save to Obsidian</button>
+        <button id="refresh" class="secondary" type="button">Refresh notes</button>
+      </div>
+      <p class="status" id="status" aria-live="polite"></p>
+    </section>
+
+    <section class="panel">
+      <h2 style="margin-top:0;font-size:1.1rem;">Recent notes</h2>
+      <ul class="notes" id="notes"></ul>
+    </section>
+  </main>
+  <script>
+    const $ = (id) => document.getElementById(id);
+    const statusEl = $("status");
+    const shareStatusEl = $("shareStatus");
+    const drop = $("drop");
+
+    function setStatus(msg, kind) {
+      statusEl.textContent = msg || "";
+      statusEl.className = "status" + (kind ? " " + kind : "");
+    }
+
+    function setShareStatus(msg, kind) {
+      shareStatusEl.textContent = msg || "";
+      shareStatusEl.className = "status" + (kind ? " " + kind : "");
+    }
+
+    async function loadHealth() {
+      try {
+        const res = await fetch("/api/health");
+        const data = await res.json();
+        const vault = data.vault_path || "(not set — run config set-vault)";
+        $("health").textContent = `Vault: ${vault} · notes in /${data.notes_subdir}`;
+      } catch (err) {
+        $("health").textContent = "Local server not reachable.";
+      }
+    }
+
+    async function loadNotes() {
+      const list = $("notes");
+      list.innerHTML = "";
+      try {
+        const res = await fetch("/api/notes");
+        if (!res.ok) {
+          const err = await res.json();
+          list.innerHTML = `<li>${err.detail || "Could not list notes"}</li>`;
+          return;
+        }
+        const data = await res.json();
+        if (!data.notes.length) {
+          list.innerHTML = "<li>No notes yet.</li>";
+          return;
+        }
+        for (const note of data.notes) {
+          const li = document.createElement("li");
+          li.innerHTML = `<strong>${note.title}</strong><span>${note.filename}</span>`;
+          list.appendChild(li);
+        }
+      } catch (err) {
+        list.innerHTML = "<li>Could not list notes.</li>";
+      }
+    }
+
+    async function save() {
+      const text = $("text").value.trim();
+      if (!text) {
+        setStatus("Paste or drop some chat text first.", "err");
+        return;
+      }
+      const tags = $("tags").value
+        .split(",")
+        .map((t) => t.trim())
+        .filter(Boolean);
+      $("save").disabled = true;
+      setStatus("Saving…");
+      try {
+        const res = await fetch("/api/paste", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            text,
+            title: $("title").value.trim() || null,
+            tags,
+          }),
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          setStatus(data.detail || "Save failed", "err");
+          return;
+        }
+        setStatus(`Saved ${data.filename}${data.created ? "" : " (updated)"}`, "ok");
+        await loadNotes();
+      } catch (err) {
+        setStatus("Save failed — is the server running?", "err");
+      } finally {
+        $("save").disabled = false;
+      }
+    }
+
+    function onFile(file) {
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        $("text").value = String(reader.result || "");
+        if (!$("title").value) {
+          $("title").value = file.name.replace(/\.(md|txt)$/i, "");
+        }
+        setStatus(`Loaded ${file.name}`);
+      };
+      reader.readAsText(file);
+    }
+
+    drop.addEventListener("dragover", (e) => {
+      e.preventDefault();
+      drop.classList.add("drag");
+    });
+    drop.addEventListener("dragleave", () => drop.classList.remove("drag"));
+    drop.addEventListener("drop", (e) => {
+      e.preventDefault();
+      drop.classList.remove("drag");
+      onFile(e.dataTransfer.files[0]);
+    });
+    async function importShare() {
+      const url = $("shareUrl").value.trim();
+      if (!url) {
+        setShareStatus("Paste a https://chatgpt.com/share/... link first.", "err");
+        return;
+      }
+      const tags = $("tags").value
+        .split(",")
+        .map((t) => t.trim())
+        .filter(Boolean);
+      $("importShare").disabled = true;
+      setShareStatus("Fetching public share page…");
+      try {
+        const res = await fetch("/api/share", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            url,
+            title: $("title").value.trim() || null,
+            tags,
+          }),
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          setShareStatus(data.detail || "Share import failed", "err");
+          return;
+        }
+        setShareStatus(
+          `Saved ${data.filename} (${data.message_count || "?"} messages)`,
+          "ok"
+        );
+        await loadNotes();
+      } catch (err) {
+        setShareStatus("Import failed — is the server running?", "err");
+      } finally {
+        $("importShare").disabled = false;
+      }
+    }
+
+    $("save").addEventListener("click", save);
+    $("importShare").addEventListener("click", importShare);
+    $("refresh").addEventListener("click", loadNotes);
+    loadHealth();
+    loadNotes();
+  </script>
+</body>
+</html>

@@ -1,0 +1,8 @@
+{
+  "title": "Extension Sample Chat",
+  "url": "https://chatgpt.com/c/sample-conversation-id",
+  "messages": [
+    {"role": "user", "content": "What is a stable key?"},
+    {"role": "assistant", "content": "A hash of the URL or title plus first user message."}
+  ]
+}
