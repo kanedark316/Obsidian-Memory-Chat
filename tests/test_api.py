@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
+import pytest
 from fastapi.testclient import TestClient
 
 from chatgpt_obsidian_memory.config import AppConfig
@@ -14,7 +15,10 @@ def test_paste_and_list_api(tmp_path: Path) -> None:
 
     health = client.get("/api/health")
     assert health.status_code == 200
-    assert health.json()["vault_path"] == str(tmp_path)
+    body = health.json()
+    assert body["vault_path"] == str(tmp_path)
+    assert body["wrong_host"] is False
+    assert "ChatGPT-Memory" in body["preferred_notes_dir"]
 
     res = client.post(
         "/api/paste",
@@ -35,6 +39,44 @@ def test_paste_and_list_api(tmp_path: Path) -> None:
     notes = client.get("/api/notes")
     assert notes.status_code == 200
     assert len(notes.json()["notes"]) == 1
+
+
+def test_cloud_agent_vault_blocks_share_and_paste(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    config_file = tmp_path / "config.toml"
+    monkeypatch.setattr(
+        "chatgpt_obsidian_memory.config.default_config_path",
+        lambda: config_file,
+    )
+
+    cloud_vault = Path("/home/ubuntu/Obsidian Memory Chat")
+    cfg = AppConfig(vault_path=cloud_vault, notes_subdir="ChatGPT-Memory")
+    client = TestClient(create_app(cfg))
+
+    health = client.get("/api/health")
+    assert health.status_code == 200
+    assert health.json()["wrong_host"] is True
+
+    paste = client.post(
+        "/api/paste",
+        json={"text": "You: hi\n\nChatGPT: hello", "title": "Blocked"},
+    )
+    assert paste.status_code == 400
+    assert "C:\\Users\\shash\\.cursor-tutor\\Obsidian Memory Chat\\ChatGPT-Memory" in paste.json()[
+        "detail"
+    ]
+
+    blocked = client.post(
+        "/api/config/vault",
+        json={"vault_path": "/home/ubuntu/Obsidian Memory Chat"},
+    )
+    assert blocked.status_code == 400
+
+    ok_vault = tmp_path / "vault"
+    ok = client.post("/api/config/vault", json={"vault_path": str(ok_vault)})
+    assert ok.status_code == 200
+    assert ok.json()["notes_dir"].endswith("ChatGPT-Memory")
 
 
 def test_import_extension_auto_save(tmp_path: Path) -> None:

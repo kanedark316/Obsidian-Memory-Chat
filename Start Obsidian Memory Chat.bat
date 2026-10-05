@@ -1,4 +1,3 @@
 @echo off
-REM Double-click shortcut at project root — runs the real launcher in scripts\
-cd /d "%~dp0"
+REM Double-click this file. It always uses your Windows vault folder.
 call "%~dp0scripts\Start-Obsidian-Memory-Chat.bat"

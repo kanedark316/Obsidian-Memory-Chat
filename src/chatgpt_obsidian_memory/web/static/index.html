@@ -93,6 +93,19 @@
     .status.ok { color: var(--ok); }
     .status.err { color: var(--err); }
     .meta { font-size: 0.85rem; color: var(--muted); margin-bottom: 1rem; }
+    .banner {
+      display: none;
+      background: #fde8e8;
+      border: 1px solid #e4a0a0;
+      color: var(--err);
+      border-radius: 12px;
+      padding: 1rem 1.1rem;
+      margin-bottom: 1rem;
+      font-size: 0.95rem;
+      line-height: 1.45;
+    }
+    .banner.show { display: block; }
+    .banner code { word-break: break-all; }
     ul.notes { list-style: none; padding: 0; margin: 0; }
     ul.notes li {
       padding: 0.55rem 0;
@@ -112,7 +125,32 @@
       (⋯ → Share → Copy link), or use the browser extension on an open ChatGPT page.
       No ChatGPT API keys — notes are written only into your local Obsidian vault.
     </p>
+    <div class="banner" id="wrongHostBanner" role="alert">
+      <strong>Wrong server.</strong> This page is the Cloud Agent (/home/ubuntu),
+      not your Windows PC. Close it. On Windows, extract the zip into
+      <code>C:\Users\shash\.cursor-tutor\Obsidian Memory Chat</code>,
+      double-click <code>Start Obsidian Memory Chat.bat</code>, then use
+      Import share link. Notes save to
+      <code>C:\Users\shash\.cursor-tutor\Obsidian Memory Chat\ChatGPT-Memory</code>.
+    </div>
     <p class="meta" id="health">Checking local server…</p>
+
+    <section class="panel">
+      <h2 style="margin-top:0;font-size:1.1rem;">Vault folder (where .md files save)</h2>
+      <p class="meta" style="margin-top:0">
+        Share imports write into <code>ChatGPT-Memory</code> inside this folder.
+      </p>
+      <div class="row">
+        <div>
+          <label for="vaultPath">Vault path</label>
+          <input id="vaultPath" type="text" value="C:\Users\shash\.cursor-tutor\Obsidian Memory Chat" />
+        </div>
+      </div>
+      <div class="actions">
+        <button id="saveVault" type="button">Use this vault</button>
+      </div>
+      <p class="status" id="vaultStatus" aria-live="polite"></p>
+    </section>
 
     <section class="panel">
       <h2 style="margin-top:0;font-size:1.1rem;">Share chat link</h2>
@@ -183,10 +221,69 @@
       try {
         const res = await fetch("/api/health");
         const data = await res.json();
-        const vault = data.vault_path || "(not set — run config set-vault)";
-        $("health").textContent = `Vault: ${vault} · notes in /${data.notes_subdir}`;
+        const preferred =
+          data.preferred_notes_dir ||
+          "C:\\Users\\shash\\.cursor-tutor\\Obsidian Memory Chat\\ChatGPT-Memory";
+        const vault = data.vault_path || "(not set)";
+        const notes = data.notes_dir || `(vault)/${data.notes_subdir}`;
+        $("health").textContent = `Vault: ${vault} · Notes: ${notes}`;
+        if (data.preferred_vault_path) {
+          $("vaultPath").value = data.preferred_vault_path;
+        } else if (data.vault_path && !data.wrong_host) {
+          $("vaultPath").value = data.vault_path;
+        }
+        const banner = $("wrongHostBanner");
+        if (data.wrong_host) {
+          banner.classList.add("show");
+          $("health").textContent =
+            `WRONG SERVER — Cloud Agent vault blocked. Target notes folder: ${preferred}`;
+          $("health").style.color = "var(--err)";
+          $("importShare").disabled = true;
+          $("save").disabled = true;
+          $("saveVault").disabled = true;
+        } else {
+          banner.classList.remove("show");
+          $("health").style.color = "";
+          $("importShare").disabled = false;
+          $("save").disabled = false;
+          $("saveVault").disabled = false;
+        }
       } catch (err) {
         $("health").textContent = "Local server not reachable.";
+      }
+    }
+
+    async function saveVault() {
+      const vault_path = $("vaultPath").value.trim();
+      if (!vault_path) {
+        $("vaultStatus").textContent = "Enter a vault folder path.";
+        $("vaultStatus").className = "status err";
+        return;
+      }
+      $("saveVault").disabled = true;
+      $("vaultStatus").textContent = "Updating vault…";
+      $("vaultStatus").className = "status";
+      try {
+        const res = await fetch("/api/config/vault", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ vault_path }),
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          $("vaultStatus").textContent = data.detail || "Failed to set vault";
+          $("vaultStatus").className = "status err";
+          return;
+        }
+        $("vaultStatus").textContent = `Notes will save to ${data.notes_dir}`;
+        $("vaultStatus").className = "status ok";
+        await loadHealth();
+        await loadNotes();
+      } catch (err) {
+        $("vaultStatus").textContent = "Could not update vault.";
+        $("vaultStatus").className = "status err";
+      } finally {
+        $("saveVault").disabled = false;
       }
     }
 
@@ -302,7 +399,7 @@
           return;
         }
         setShareStatus(
-          `Saved ${data.filename} (${data.message_count || "?"} messages)`,
+          `Saved ${data.filename} → ${data.path || data.notes_dir || ""}`,
           "ok"
         );
         await loadNotes();
@@ -315,6 +412,7 @@
 
     $("save").addEventListener("click", save);
     $("importShare").addEventListener("click", importShare);
+    $("saveVault").addEventListener("click", saveVault);
     $("refresh").addEventListener("click", loadNotes);
     loadHealth();
     loadNotes();

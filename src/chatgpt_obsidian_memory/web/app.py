@@ -11,7 +11,16 @@ from fastapi import FastAPI, HTTPException
 from fastapi.responses import HTMLResponse
 from pydantic import BaseModel, Field
 
-from chatgpt_obsidian_memory.config import AppConfig, load_config
+from chatgpt_obsidian_memory.config import (
+    PREFERRED_NOTES_DIR_STR,
+    PREFERRED_WINDOWS_VAULT_STR,
+    AppConfig,
+    assert_vault_allows_writes,
+    is_cloud_agent_vault,
+    load_config,
+    pin_windows_vault,
+    save_config,
+)
 from chatgpt_obsidian_memory.normalize import (
     ChatTranscript,
     SourceKind,
@@ -87,9 +96,13 @@ class ShareRequest(BaseModel):
     tags: list[str] = Field(default_factory=list)
 
 
+class VaultRequest(BaseModel):
+    vault_path: str
+
+
 def create_app(config: AppConfig | None = None) -> FastAPI:
     app = FastAPI(title="ChatGPT Obsidian Memory", version="0.1.0")
-    state_config = config or load_config()
+    state_config = pin_windows_vault(config or load_config())
 
     def get_config() -> AppConfig:
         return state_config
@@ -105,27 +118,72 @@ def create_app(config: AppConfig | None = None) -> FastAPI:
     def save(transcript: ChatTranscript) -> dict[str, Any]:
         cfg = get_config()
         try:
+            assert_vault_allows_writes(cfg)
             notes_dir = cfg.notes_dir()
         except ValueError as exc:
             raise HTTPException(status_code=400, detail=str(exc)) from exc
+        notes_dir.mkdir(parents=True, exist_ok=True)
         result = write_transcript(notes_dir, transcript)
         return {
             "ok": True,
             "created": result.created,
             "filename": result.filename,
             "path": str(result.path),
+            "notes_dir": str(notes_dir),
         }
 
     @app.get("/api/health")
     def health() -> dict[str, Any]:
         cfg = get_config()
+        notes_dir = None
+        try:
+            notes_dir = str(cfg.notes_dir())
+        except ValueError:
+            notes_dir = None
+        wrong_host = is_cloud_agent_vault(cfg.vault_path)
         return {
             "ok": True,
             "vault_path": str(cfg.vault_path) if cfg.vault_path else None,
             "notes_subdir": cfg.notes_subdir,
+            "notes_dir": notes_dir,
+            "preferred_vault_path": PREFERRED_WINDOWS_VAULT_STR,
+            "preferred_notes_dir": PREFERRED_NOTES_DIR_STR,
+            "wrong_host": wrong_host,
             "auto_save_from_extension": cfg.auto_save_from_extension,
             "host": cfg.host,
             "port": cfg.port,
+        }
+
+    @app.post("/api/config/vault")
+    def set_vault(body: VaultRequest) -> dict[str, Any]:
+        """Point Share/Paste imports at a vault folder (runtime + saved config)."""
+        nonlocal state_config
+
+        raw = body.vault_path.strip().strip('"')
+        if not raw:
+            raise HTTPException(status_code=400, detail="vault_path is required")
+        if is_cloud_agent_vault(raw):
+            raise HTTPException(
+                status_code=400,
+                detail=(
+                    "Cannot use the Cloud Agent folder. Set vault to "
+                    f"{PREFERRED_WINDOWS_VAULT_STR} and run the .bat on Windows."
+                ),
+            )
+        path = Path(raw).expanduser()
+        try:
+            path.mkdir(parents=True, exist_ok=True)
+            (path / state_config.notes_subdir).mkdir(parents=True, exist_ok=True)
+            resolved = path.resolve()
+        except OSError as exc:
+            raise HTTPException(status_code=400, detail=f"Cannot use vault path: {exc}") from exc
+        state_config.vault_path = resolved
+        pin_windows_vault(state_config)
+        save_config(state_config)
+        return {
+            "ok": True,
+            "vault_path": str(state_config.vault_path),
+            "notes_dir": str(Path(state_config.vault_path) / state_config.notes_subdir),
         }
 
     @app.get("/api/notes")
@@ -175,6 +233,10 @@ def create_app(config: AppConfig | None = None) -> FastAPI:
     @app.post("/api/share")
     def import_share(body: ShareRequest) -> dict[str, Any]:
         """Import a public ChatGPT Share link (⋯ → Share chat → Copy link)."""
+        try:
+            assert_vault_allows_writes(get_config())
+        except ValueError as exc:
+            raise HTTPException(status_code=400, detail=str(exc)) from exc
         try:
             transcript = import_share_url(body.url)
         except ShareImportError as exc:

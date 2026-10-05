@@ -90,7 +90,31 @@ def serve(
     port: Optional[int] = typer.Option(None, help="Bind port (default from config: 8765)"),
 ) -> None:
     """Start the localhost UI + import API for the browser extension."""
-    cfg = load_config()
+    import os
+
+    from chatgpt_obsidian_memory.config import (
+        PREFERRED_NOTES_DIR_STR,
+        PREFERRED_WINDOWS_VAULT_STR,
+        is_cloud_agent_vault,
+        pin_windows_vault,
+    )
+
+    if os.name != "nt" and os.environ.get("CHATGPT_OBSIDIAN_DEV") != "1":
+        console.print("[red]Refusing to serve outside Windows.[/red]")
+        console.print(f"Share imports must go to: {PREFERRED_NOTES_DIR_STR}")
+        console.print(
+            f"On your PC extract into {PREFERRED_WINDOWS_VAULT_STR} "
+            "and double-click Start Obsidian Memory Chat.bat"
+        )
+        console.print("Cloud Agent /home/ubuntu cannot write to C:\\")
+        raise typer.Exit(code=1)
+
+    cfg = pin_windows_vault(load_config())
+    if is_cloud_agent_vault(cfg.vault_path) and os.environ.get("CHATGPT_OBSIDIAN_DEV") != "1":
+        console.print("[red]Refusing to serve with Cloud Agent vault.[/red]")
+        console.print(f"Share imports must go to: {PREFERRED_NOTES_DIR_STR}")
+        raise typer.Exit(code=1)
+
     bind_host = host or cfg.host
     bind_port = port or cfg.port
     if bind_host not in {"127.0.0.1", "localhost", "::1"}:

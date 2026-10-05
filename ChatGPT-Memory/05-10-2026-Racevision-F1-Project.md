@@ -1,7 +1,7 @@
 ---
 title: RaceVision F1 Project
 source: share
-saved_at: 2026-10-05T18:07:05.299773+00:00
+saved_at: 2026-10-05T21:01:16.325613+00:00
 stable_key: 6137286de1c8b633
 tags: [chatgpt, memory]
 url: "https://chatgpt.com/share/6ac3e73c-7ba4-83eb-b4ec-c88d4b64de2b"
@@ -98,48 +98,48 @@ This will be a detailed review rather than a superficial repository summary.
 
 ## User
 
-Agent 08.7 — Telemetry Ingestion Pipeline is complete.
-
-Summary
-Built backend/ingestion/ as the orchestration layer tying together Provider → Normalizer → Validation → future collectors.
-
-ProviderManager.receive()
-        ↓
-TelemetryNormalizer (08.5)
-        ↓
-TelemetryValidator (08.6)
-        ↓
-TelemetryIngestionPipeline
-  Dispatch → Route → Queue → Buffer → Batch → Output
-        ↓
-Future Collector / DB / Replay / Unity / OBS / AI / Streaming
-What shipped
-Area	Details
-Core
-TelemetryIngestionPipeline, IngestionManager, IngestionController
-Routing
-IngestionDispatcher, IngestionRouter (destination keys only)
-Flow
-Queue / Buffer / Batch / Scheduler / FlowController / Backpressure / Checkpoint
-Ops
-Statistics, Monitor, Diagnostics, Health, Registry, Metadata
-Config
-Frozen IngestionSettings (DI, no singleton)
-Events
-11 ingestion events in shared.protocols.events.telemetry + catalogue
-Docs
-Package README, extension notes, IngestionPipelineSpecification.md
-Results
-Check	Result
-backend.ingestion coverage
-97.26% (≥95% target)
-Related suites
-321 passed (ingestion + normalization + validation + providers + events)
-Smoke test
-LiveF1 Position frame → 1 accepted message
-Offline
-No PostgreSQL / network / Unity / OBS / Replay / AI
-Not implemented (by design)
+Agent 08.7 — Telemetry Ingestion Pipeline is complete.
+
+Summary
+Built backend/ingestion/ as the orchestration layer tying together Provider → Normalizer → Validation → future collectors.
+
+ProviderManager.receive()
+        ↓
+TelemetryNormalizer (08.5)
+        ↓
+TelemetryValidator (08.6)
+        ↓
+TelemetryIngestionPipeline
+  Dispatch → Route → Queue → Buffer → Batch → Output
+        ↓
+Future Collector / DB / Replay / Unity / OBS / AI / Streaming
+What shipped
+Area	Details
+Core
+TelemetryIngestionPipeline, IngestionManager, IngestionController
+Routing
+IngestionDispatcher, IngestionRouter (destination keys only)
+Flow
+Queue / Buffer / Batch / Scheduler / FlowController / Backpressure / Checkpoint
+Ops
+Statistics, Monitor, Diagnostics, Health, Registry, Metadata
+Config
+Frozen IngestionSettings (DI, no singleton)
+Events
+11 ingestion events in shared.protocols.events.telemetry + catalogue
+Docs
+Package README, extension notes, IngestionPipelineSpecification.md
+Results
+Check	Result
+backend.ingestion coverage
+97.26% (≥95% target)
+Related suites
+321 passed (ingestion + normalization + validation + providers + events)
+Smoke test
+LiveF1 Position frame → 1 accepted message
+Offline
+No PostgreSQL / network / Unity / OBS / Replay / AI
+Not implemented (by design)
 Collectors, DB persistence, replay engine, Unity/OBS/AI/APIs, WebSockets/HTTP, business logic, background workers/threads, auto-dropping under backpressure (recommendations only).
 
 ## Assistant
@@ -1383,50 +1383,50 @@ That matches the architecture already completed.
 
 ## User
 
-Agent 08.8 — High-Speed Database Writer is complete.
-
-Summary
-Added backend/persistence/ to persist validated telemetry from Ingestion (08.7) into PostgreSQL via Repository / UnitOfWork — infrastructure only, no business logic.
-
-Ingestion Pipeline
-        ↓
-DatabaseWriterManager / DatabaseWriter
-  Buffer → Batch → PersistPort → AsyncUnitOfWork (bulk Core insert)
-        ↓
-PostgreSQL telemetry_samples
-What shipped
-Component	Role
-DatabaseWriter
-receive → queue → batch → persist(+retry) → acknowledge
-DatabaseWriterManager
-Lifecycle + IngestionConsumer.consume
-DatabaseWriterController
-start / stop / drain / health
-Buffer / Batch
-Ordering preserved; max items/bytes/latency
-RetryPolicy
-Deadlock/disconnect/serialization + backoff/jitter
-Checkpoints
-In-memory last sequence/session/frames
-Monitor / Stats / Diagnostics
-Utilization + recommendations (no auto-drop)
-PersistPort
-InMemoryPersistAdapter (tests), UowTelemetryPersistAdapter (SQLAlchemy Core bulk insert), CallablePersistAdapter
-Events registered: DatabaseWriteStarted/Completed/Failed, DatabaseBatchCreated, DatabaseRetryStarted/Completed, CheckpointCreated/Updated, BatchCommitted/RolledBack (+ reuse BufferFlushed).
-
-Docs: backend/persistence/README.md, docs/specifications/DatabaseWriterSpecification.md
-
-Results
-Check	Result
-Coverage backend.persistence
-96.57%
-Related suites
-368 passed (persistence + ingestion + validation + normalization + providers + events)
-Offline
-In-memory adapter — no PostgreSQL required for unit tests
-Agents 08.1–08.7
-No regressions
-Not implemented (by design)
+Agent 08.8 — High-Speed Database Writer is complete.
+
+Summary
+Added backend/persistence/ to persist validated telemetry from Ingestion (08.7) into PostgreSQL via Repository / UnitOfWork — infrastructure only, no business logic.
+
+Ingestion Pipeline
+        ↓
+DatabaseWriterManager / DatabaseWriter
+  Buffer → Batch → PersistPort → AsyncUnitOfWork (bulk Core insert)
+        ↓
+PostgreSQL telemetry_samples
+What shipped
+Component	Role
+DatabaseWriter
+receive → queue → batch → persist(+retry) → acknowledge
+DatabaseWriterManager
+Lifecycle + IngestionConsumer.consume
+DatabaseWriterController
+start / stop / drain / health
+Buffer / Batch
+Ordering preserved; max items/bytes/latency
+RetryPolicy
+Deadlock/disconnect/serialization + backoff/jitter
+Checkpoints
+In-memory last sequence/session/frames
+Monitor / Stats / Diagnostics
+Utilization + recommendations (no auto-drop)
+PersistPort
+InMemoryPersistAdapter (tests), UowTelemetryPersistAdapter (SQLAlchemy Core bulk insert), CallablePersistAdapter
+Events registered: DatabaseWriteStarted/Completed/Failed, DatabaseBatchCreated, DatabaseRetryStarted/Completed, CheckpointCreated/Updated, BatchCommitted/RolledBack (+ reuse BufferFlushed).
+
+Docs: backend/persistence/README.md, docs/specifications/DatabaseWriterSpecification.md
+
+Results
+Check	Result
+Coverage backend.persistence
+96.57%
+Related suites
+368 passed (persistence + ingestion + validation + normalization + providers + events)
+Offline
+In-memory adapter — no PostgreSQL required for unit tests
+Agents 08.1–08.7
+No regressions
+Not implemented (by design)
 Replay, Unity, OBS, REST/WebSockets, AI, analytics, streaming, background workers/threads, Kafka/Redis, auto-dropping. Ready for Agent 08.9 (Replay Persistence) and Agent 09 (Streaming Persistence).
 
 ## Assistant
@@ -2466,55 +2466,55 @@ I think this is the missing architectural piece between **Agent 08.8 (High-Speed
 
 ## User
 
-Agent 08.9 — Live Event Bus is complete.
-
-Summary
-Added backend/eventbus/ as a transport-agnostic pub/sub backbone after the Database Writer. It publishes and routes immutable protocol events only — no WebSockets, REST, Unity, OBS, AI, Replay, or messaging brokers.
-
-Database Writer
-        ↓
-EventPublisher → LiveEventBus
-        ↓
-Registry → Router → Subscribers
-        ↓
-Acknowledgements → Statistics / Checkpoints
-What shipped
-Component	Role
-LiveEventBus
-publish / subscribe / dispatch / broadcast / ack / flush / shutdown
-EventBusManager / Controller
-Lifecycle façade
-EventPublisher
-Publish without knowing subscribers
-EventSubscriber / RecordingSubscriber
-Immutable receive/handle/ack
-SubscriptionRegistry
-Dynamic register/unregister, priority order
-EventRouter
-One-to-many by type/topic/category/session/driver
-EventFilter
-Optional filters (incl. persistence/position/lap/race_control helpers)
-Acknowledgements
-pending → acknowledged / failed / retried / expired
-Checkpoints / Stats / Monitor
-In-memory ops + recommendations only
-Bus events in shared.protocols.events.bus (catalogue registered): EventPublished, EventReceived, EventDispatched, EventAcknowledged, subscriber/subscription lifecycle, broadcast, filter, EventBusCheckpointUpdated, QueueFlushed, shutdown.
-
-Docs: backend/eventbus/README.md, docs/specifications/LiveEventBusSpecification.md
-
-Results
-Check	Result
-Coverage backend.eventbus
-95.52%
-Related suites
-417 passed (eventbus → persistence → ingestion → validation → normalization → providers → events)
-Agents 08.1–08.8
-No regressions
-Offline
-In-process only — no network / brokers / PostgreSQL
-Not implemented (by design)
-Replay, Unity, OBS, REST/WebSockets, AI, streaming, analytics, Kafka/Redis/NATS/etc., background workers, distributed messaging, persistence, business logic.
-
+Agent 08.9 — Live Event Bus is complete.
+
+Summary
+Added backend/eventbus/ as a transport-agnostic pub/sub backbone after the Database Writer. It publishes and routes immutable protocol events only — no WebSockets, REST, Unity, OBS, AI, Replay, or messaging brokers.
+
+Database Writer
+        ↓
+EventPublisher → LiveEventBus
+        ↓
+Registry → Router → Subscribers
+        ↓
+Acknowledgements → Statistics / Checkpoints
+What shipped
+Component	Role
+LiveEventBus
+publish / subscribe / dispatch / broadcast / ack / flush / shutdown
+EventBusManager / Controller
+Lifecycle façade
+EventPublisher
+Publish without knowing subscribers
+EventSubscriber / RecordingSubscriber
+Immutable receive/handle/ack
+SubscriptionRegistry
+Dynamic register/unregister, priority order
+EventRouter
+One-to-many by type/topic/category/session/driver
+EventFilter
+Optional filters (incl. persistence/position/lap/race_control helpers)
+Acknowledgements
+pending → acknowledged / failed / retried / expired
+Checkpoints / Stats / Monitor
+In-memory ops + recommendations only
+Bus events in shared.protocols.events.bus (catalogue registered): EventPublished, EventReceived, EventDispatched, EventAcknowledged, subscriber/subscription lifecycle, broadcast, filter, EventBusCheckpointUpdated, QueueFlushed, shutdown.
+
+Docs: backend/eventbus/README.md, docs/specifications/LiveEventBusSpecification.md
+
+Results
+Check	Result
+Coverage backend.eventbus
+95.52%
+Related suites
+417 passed (eventbus → persistence → ingestion → validation → normalization → providers → events)
+Agents 08.1–08.8
+No regressions
+Offline
+In-process only — no network / brokers / PostgreSQL
+Not implemented (by design)
+Replay, Unity, OBS, REST/WebSockets, AI, streaming, analytics, Kafka/Redis/NATS/etc., background workers, distributed messaging, persistence, business logic.
+
 Ready for Agent 09.0 (Replay Persistence Consumer) via EventSubscriber + subscribe().
 
 ## Assistant

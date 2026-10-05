@@ -14,33 +14,48 @@ def _app_dir() -> Path:
     """Folder containing the .exe (frozen) or the project root (dev)."""
     if getattr(sys, "frozen", False):
         return Path(sys.executable).resolve().parent
-    # src/chatgpt_obsidian_memory/desktop.py -> project root
     return Path(__file__).resolve().parents[2]
 
 
 def _default_vault() -> Path:
-    """Prefer the folder that contains this app / ChatGPT-Memory."""
-    app_dir = _app_dir()
-    # If exe lives in dist/, project root is parent
-    for candidate in (app_dir, app_dir.parent):
-        if (candidate / "ChatGPT-Memory").is_dir() or (candidate / "pyproject.toml").is_file():
-            return candidate
-        if (candidate / ".obsidian").is_dir():
-            return candidate
-    return app_dir
+    """Always use the user's Windows Obsidian Memory Chat folder on Windows."""
+    from chatgpt_obsidian_memory.config import (
+        PREFERRED_NOTES_DIR_STR,
+        PREFERRED_WINDOWS_VAULT,
+        PREFERRED_WINDOWS_VAULT_STR,
+    )
+
+    if os.name == "nt":
+        PREFERRED_WINDOWS_VAULT.mkdir(parents=True, exist_ok=True)
+        (PREFERRED_WINDOWS_VAULT / "ChatGPT-Memory").mkdir(parents=True, exist_ok=True)
+        return PREFERRED_WINDOWS_VAULT
+
+    if os.environ.get("CHATGPT_OBSIDIAN_DEV") == "1":
+        app_dir = _app_dir()
+        for candidate in (app_dir, app_dir.parent):
+            if (candidate / "ChatGPT-Memory").is_dir() or (candidate / "pyproject.toml").is_file():
+                return candidate.resolve()
+            if (candidate / ".obsidian").is_dir():
+                return candidate.resolve()
+        return app_dir.resolve()
+
+    print("Obsidian Memory Chat must run on your Windows PC.")
+    print(f"Vault:  {PREFERRED_WINDOWS_VAULT_STR}")
+    print(f"Notes:  {PREFERRED_NOTES_DIR_STR}")
+    print()
+    print("Double-click: Start Obsidian Memory Chat.bat")
+    print("Do not use the Cloud Agent /home/ubuntu server.")
+    raise SystemExit(1)
 
 
 def _ensure_config() -> None:
-    from chatgpt_obsidian_memory.config import load_config, save_config
+    from chatgpt_obsidian_memory.config import load_config, pin_windows_vault, save_config
 
     cfg = load_config()
-    vault = _default_vault()
-    if cfg.vault_path is None or not Path(cfg.vault_path).exists():
-        cfg.vault_path = vault
-        save_config(cfg)
-        print(f"Vault set to: {cfg.vault_path}")
-    else:
-        print(f"Vault: {cfg.vault_path}")
+    cfg.vault_path = _default_vault()
+    pin_windows_vault(cfg)
+    save_config(cfg)
+    print(f"Vault set to: {cfg.vault_path}")
     notes = Path(cfg.vault_path) / cfg.notes_subdir
     notes.mkdir(parents=True, exist_ok=True)
     print(f"Notes folder: {notes}")
@@ -64,6 +79,8 @@ def main() -> None:
     print()
     try:
         _ensure_config()
+    except SystemExit:
+        raise
     except Exception as exc:  # noqa: BLE001
         print(f"Config error: {exc}")
         input("Press Enter to exit...")
@@ -78,11 +95,12 @@ def main() -> None:
     port = int(cfg.port or 8765)
     url = f"http://{host}:{port}"
     print(f"Starting UI at {url}")
+    print("Imported notes go to:")
+    print(f"  {Path(cfg.vault_path) / cfg.notes_subdir}")
     print("Leave this window open. Close it to stop the app.")
     print()
     _open_browser(url)
 
-    # Freeze support for Windows multiprocessing / pyinstaller
     if getattr(sys, "frozen", False):
         os.environ.setdefault("PYTHONNOUSERSITE", "1")
 

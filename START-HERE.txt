@@ -1,20 +1,20 @@
-Obsidian Memory Chat — extract and run
-======================================
+Obsidian Memory Chat
+====================
 
-1. Extract this zip into:
+1. Extract ALL files into:
    C:\Users\shash\.cursor-tutor\Obsidian Memory Chat\
 
 2. Double-click:
    Start Obsidian Memory Chat.bat
 
-3. Browser opens at http://127.0.0.1:8765
-   Leave the black window open while using the app.
+3. Confirm the page says Vault is:
+   C:\Users\shash\.cursor-tutor\Obsidian Memory Chat
+   (NOT /home/ubuntu/...)
 
-Notes save to:
-   ChatGPT-Memory\
+4. Import share links — .md files go ONLY to:
+   C:\Users\shash\.cursor-tutor\Obsidian Memory Chat\ChatGPT-Memory\
 
-Optional: build a real .exe (once):
-   powershell -ExecutionPolicy Bypass -File .\scripts\build-windows-exe.ps1
-   then double-click ObsidianMemoryChat.exe
-
-Requires Python 3.11+ installed with "Add to PATH".
+IMPORTANT:
+- Close any Cloud Agent / Cursor port-forward page that shows /home/ubuntu.
+- Always start with the .bat on your Windows PC.
+- Cloud Agent cannot write to C:\ — that only works from Windows.

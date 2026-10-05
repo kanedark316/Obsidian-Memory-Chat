@@ -1,7 +1,7 @@
 ---
 title: Live F1 Tracking Data
 source: share
-saved_at: 2026-10-05T14:37:36.126706+00:00
+saved_at: 2026-10-05T19:23:27.600068+00:00
 stable_key: 8844df628c5f92f4
 tags: [chatgpt, memory]
 url: "https://chatgpt.com/share/6abe681c-8140-83eb-acb0-30ad83ae1017"
@@ -8395,7 +8395,7 @@ It adds a little work up front, but it will make the platform much more reliable
 
 ## User
 
-PS C:\Users\shash> python --version
+PS C:\Users\shash> python --version
 Python 3.11.5
 
 ## Assistant
@@ -10558,40 +10558,40 @@ This gives you a proper blueprint. Once those documents are in the repository, w
 ## User
 
 is the 1 command for cusor to create tthis structor
-RaceVision
-│
-├── backend
-│   ├── collector
-│   ├── websocket
-│   ├── api
-│   ├── replay
-│   ├── telemetry
-│   ├── chat
-│   ├── ai
-│   ├── config
-│   ├── models
-│   ├── services
-│   └── utils
-│
-├── unity
-│
-├── blender
-│
-├── assets
-│   ├── cars
-│   ├── tracks
-│   ├── audio
-│   ├── textures
-│   └── ui
-│
-├── database
-│
-├── docs
-│
-├── scripts
-│
-├── tests
-│
+RaceVision
+│
+├── backend
+│   ├── collector
+│   ├── websocket
+│   ├── api
+│   ├── replay
+│   ├── telemetry
+│   ├── chat
+│   ├── ai
+│   ├── config
+│   ├── models
+│   ├── services
+│   └── utils
+│
+├── unity
+│
+├── blender
+│
+├── assets
+│   ├── cars
+│   ├── tracks
+│   ├── audio
+│   ├── textures
+│   └── ui
+│
+├── database
+│
+├── docs
+│
+├── scripts
+│
+├── tests
+│
 └── .github
 
 ## Assistant
@@ -19563,8 +19563,8 @@ Migration, Schema Evolution, QA specs · Release checklists · Load-test prep ·
 
 **Non-goals respected:** no telemetry, collectors, APIs, ORM/repo/runtime/config recreation, or business logic.
 
-Agent 06.5 — Development Environment & CI/CD (complete prompt)
-
+Agent 06.5 — Development Environment & CI/CD (complete prompt)
+
 This creates a repeatable development environment so every later feature is built on a consistent foundation.
 
 ## Assistant
@@ -22185,71 +22185,71 @@ This keeps Agent 07.1 focused solely on creating the reusable protocol infrastru
 
 ## User
 
-Shared Protocol Foundation is in place and transport-independent. 50 protocol tests passed · ~98% coverage · full suite 205 passed. Existing domain folders (telemetry/, commands/, …) were left as placeholders.
-
-Implementation Report
-Verdict
-Every future subsystem can build on shared.protocols envelopes, IDs, enums, validation, versioning, registry, and factory — with no transport or business logic in this layer.
-
-Files Created
-Area	Paths
-Package
-shared/__init__.py, shared/protocols/__init__.py
-Base
-shared/protocols/base/message.py
-Common
-common/enums.py, common/identifiers.py
-Metadata
-metadata/types.py
-Interfaces
-interfaces/protocols.py
-Validation
-validation/models.py, validators.py
-Versioning
-versioning/semver.py
-Serialization
-serialization/ports.py
-Registry
-registry/registry.py
-Factory
-factory/factory.py
-Docs
-docs/ARCHITECTURE.md, SharedProtocolFoundationSpecification.md
-Tests
-tests/protocols/test_*.py (7 modules)
-Files Updated
-shared/protocols/README.md, shared/README.md, shared/enums/README.md, docs/specifications/README.md, README.md, pyproject.toml (shared on path / coverage)
-
-Classes / Interfaces / Enums / Identifiers
-Base: BaseMessage
-Metadata: ProtocolVersionInfo, MessageMetadata, MessageSource, MessageDestination, MessagePriority, BuildInformation
-IDs: DriverID, TeamID, CarID, TrackID, SessionID, RaceID, LapID, SectorID, ReplayID, CameraID, ViewerID, StreamID, AudioChannelID, WeatherID
-Enums: MessageType, ProtocolVersion, Priority, session/track/flag/weather/camera/audio/replay/vehicle/streaming/OBS/Unity/AI states, serialization/compression/delivery/reliability/environment, ValidationSeverity
-Interfaces: ProtocolMessage, ProtocolCommand, ProtocolEvent, ProtocolResponse, ProtocolError, ProtocolSerializable, ProtocolVersioned, ProtocolValidatable, ProtocolCloneable (+ scoped/prioritised)
-Factory / Registry: MessageFactory, ProtocolRegistry, ProtocolRegistration
-Validation: ValidationResult, ValidationError, MessageValidator, ProtocolValidator
-Versioning: CompatibilityMatrix, negotiate_version, ProtocolCapabilities, DeprecatedMessage
-Serialization ports only: ProtocolSerializer, ProtocolEncoder, ProtocolDecoder, CompressionCodec, SerializerRegistry
-Tests / Coverage
-50 passed under tests/protocols/
-shared.protocols ≈ 98% (fail-under 95)
-Full repo: 205 passed
-Architecture Decisions
-Integrate beside existing family folders — do not replace APS placeholders
-Structural typing.Protocol interfaces (avoid ABC + Pydantic field shadowing)
-Wire tag enum ProtocolVersion vs semantic ProtocolVersionInfo
-Injectable registry/factory — no process singleton
-Serialization = ports only (no JSON codec)
-Python enums as vocabulary source; shared/enums kept for language-neutral mirrors
-Known Limitations
-No concrete domain messages yet
-No wire codecs
-Type-mismatch branch in ProtocolValidator is largely unreachable while everything is BaseMessage
-Unity/C# mirrors not generated yet
-Future Recommendations
-Subclass BaseMessage under telemetry/ / commands/ / events/ / …
-Add JSON (then MessagePack/Protobuf) ProtocolSerializer implementations
-Codegen C# / JSON Schema from the same vocabulary
+Shared Protocol Foundation is in place and transport-independent. 50 protocol tests passed · ~98% coverage · full suite 205 passed. Existing domain folders (telemetry/, commands/, …) were left as placeholders.
+
+Implementation Report
+Verdict
+Every future subsystem can build on shared.protocols envelopes, IDs, enums, validation, versioning, registry, and factory — with no transport or business logic in this layer.
+
+Files Created
+Area	Paths
+Package
+shared/__init__.py, shared/protocols/__init__.py
+Base
+shared/protocols/base/message.py
+Common
+common/enums.py, common/identifiers.py
+Metadata
+metadata/types.py
+Interfaces
+interfaces/protocols.py
+Validation
+validation/models.py, validators.py
+Versioning
+versioning/semver.py
+Serialization
+serialization/ports.py
+Registry
+registry/registry.py
+Factory
+factory/factory.py
+Docs
+docs/ARCHITECTURE.md, SharedProtocolFoundationSpecification.md
+Tests
+tests/protocols/test_*.py (7 modules)
+Files Updated
+shared/protocols/README.md, shared/README.md, shared/enums/README.md, docs/specifications/README.md, README.md, pyproject.toml (shared on path / coverage)
+
+Classes / Interfaces / Enums / Identifiers
+Base: BaseMessage
+Metadata: ProtocolVersionInfo, MessageMetadata, MessageSource, MessageDestination, MessagePriority, BuildInformation
+IDs: DriverID, TeamID, CarID, TrackID, SessionID, RaceID, LapID, SectorID, ReplayID, CameraID, ViewerID, StreamID, AudioChannelID, WeatherID
+Enums: MessageType, ProtocolVersion, Priority, session/track/flag/weather/camera/audio/replay/vehicle/streaming/OBS/Unity/AI states, serialization/compression/delivery/reliability/environment, ValidationSeverity
+Interfaces: ProtocolMessage, ProtocolCommand, ProtocolEvent, ProtocolResponse, ProtocolError, ProtocolSerializable, ProtocolVersioned, ProtocolValidatable, ProtocolCloneable (+ scoped/prioritised)
+Factory / Registry: MessageFactory, ProtocolRegistry, ProtocolRegistration
+Validation: ValidationResult, ValidationError, MessageValidator, ProtocolValidator
+Versioning: CompatibilityMatrix, negotiate_version, ProtocolCapabilities, DeprecatedMessage
+Serialization ports only: ProtocolSerializer, ProtocolEncoder, ProtocolDecoder, CompressionCodec, SerializerRegistry
+Tests / Coverage
+50 passed under tests/protocols/
+shared.protocols ≈ 98% (fail-under 95)
+Full repo: 205 passed
+Architecture Decisions
+Integrate beside existing family folders — do not replace APS placeholders
+Structural typing.Protocol interfaces (avoid ABC + Pydantic field shadowing)
+Wire tag enum ProtocolVersion vs semantic ProtocolVersionInfo
+Injectable registry/factory — no process singleton
+Serialization = ports only (no JSON codec)
+Python enums as vocabulary source; shared/enums kept for language-neutral mirrors
+Known Limitations
+No concrete domain messages yet
+No wire codecs
+Type-mismatch branch in ProtocolValidator is largely unreachable while everything is BaseMessage
+Unity/C# mirrors not generated yet
+Future Recommendations
+Subclass BaseMessage under telemetry/ / commands/ / events/ / …
+Add JSON (then MessagePack/Protobuf) ProtocolSerializer implementations
+Codegen C# / JSON Schema from the same vocabulary
 Wire CI job: pytest tests/protocols --cov=shared.protocols --cov-fail-under=95
 
 please give commands for Agent 07.2
@@ -24826,62 +24826,62 @@ This agent completes the third major pillar of the RaceVision messaging architec
 
 ## User
 
-Implementation Report
-Verdict
-Every future subsystem must request work through these transport-independent command contracts. No handlers, networking, or business logic.
-
-Files Created
-Area	Path
-Base
-commands/base/message.py → CommandMessage
-Common
-commands/common/enums.py
-Domains
-camera, obs, unity, streaming, replay, recording, telemetry, database, session, viewer, chat, moderation, ai, director, statistics, weather, audio, system, admin, future
-Validation
-commands/validation/validators.py
-Catalogue / Registry
-commands/catalogue.py, commands/registry/
-Docs
-commands/README.md, CommandProtocolSpecification.md
-Tests
-tests/protocols/commands/*.py
-Generator
-scripts/development/generate_command_protocols.py
-Files Updated
-shared/protocols/README.md, docs/specifications/README.md, root README.md
-
-Command Types / Categories
-143 types (including CommandMessage) across camera, OBS, Unity, streaming, replay, recording, telemetry, database, session, viewer, chat, moderation, AI, director, statistics, weather, audio, system, admin, future.
-
-Validation
-CommandValidator — foundation envelope + target/category, timeout/retry bounds, execution/idempotency rules, requested_at TZ. No business rules.
-
-Registry / Catalogue
-CommandCatalogue — subtype + category lookup (deduped discovery)
-CommandRegistry / build_command_registry() — injectable + plugins
-Foundation ProtocolRegistry — MessageType.COMMAND family root
-Tests / Coverage
-17 command tests passed
-shared.protocols.commands ≈ 99% (fail-under 95)
-Full suite: 263 passed
-Architecture Decisions
-CommandMessage extends BaseMessage only (not events/telemetry)
-Reuse foundation priority; add command-specific timeout/retry/idempotency/execution fields
-Intentions vs facts vs samples kept as separate protocol families
-Renamed DB ArchiveSession → ArchiveSessionStore to avoid clash with session command
-Chat delete payload uses chat_message_id so it does not shadow envelope message_id
-Known Limitations
-No command bus / executors / ACK response schemas yet
-Some payloads are thin until adapters fill them
-Timeout/retry hints are protocol-only
-Future Recommendations
-Wire responses/ / errors/ to expected_response
-Command bus routing on target_subsystem
-Idempotent executor keys in distributed deployment
-JSON Schema export under shared/schemas/v*
-That gate earlier failed on test_all_catalogue_types_construct_and_validate while ruff/isort were rewriting command module imports mid-run.
-
+Implementation Report
+Verdict
+Every future subsystem must request work through these transport-independent command contracts. No handlers, networking, or business logic.
+
+Files Created
+Area	Path
+Base
+commands/base/message.py → CommandMessage
+Common
+commands/common/enums.py
+Domains
+camera, obs, unity, streaming, replay, recording, telemetry, database, session, viewer, chat, moderation, ai, director, statistics, weather, audio, system, admin, future
+Validation
+commands/validation/validators.py
+Catalogue / Registry
+commands/catalogue.py, commands/registry/
+Docs
+commands/README.md, CommandProtocolSpecification.md
+Tests
+tests/protocols/commands/*.py
+Generator
+scripts/development/generate_command_protocols.py
+Files Updated
+shared/protocols/README.md, docs/specifications/README.md, root README.md
+
+Command Types / Categories
+143 types (including CommandMessage) across camera, OBS, Unity, streaming, replay, recording, telemetry, database, session, viewer, chat, moderation, AI, director, statistics, weather, audio, system, admin, future.
+
+Validation
+CommandValidator — foundation envelope + target/category, timeout/retry bounds, execution/idempotency rules, requested_at TZ. No business rules.
+
+Registry / Catalogue
+CommandCatalogue — subtype + category lookup (deduped discovery)
+CommandRegistry / build_command_registry() — injectable + plugins
+Foundation ProtocolRegistry — MessageType.COMMAND family root
+Tests / Coverage
+17 command tests passed
+shared.protocols.commands ≈ 99% (fail-under 95)
+Full suite: 263 passed
+Architecture Decisions
+CommandMessage extends BaseMessage only (not events/telemetry)
+Reuse foundation priority; add command-specific timeout/retry/idempotency/execution fields
+Intentions vs facts vs samples kept as separate protocol families
+Renamed DB ArchiveSession → ArchiveSessionStore to avoid clash with session command
+Chat delete payload uses chat_message_id so it does not shadow envelope message_id
+Known Limitations
+No command bus / executors / ACK response schemas yet
+Some payloads are thin until adapters fill them
+Timeout/retry hints are protocol-only
+Future Recommendations
+Wire responses/ / errors/ to expected_response
+Command bus routing on target_subsystem
+Idempotent executor keys in distributed deployment
+JSON Schema export under shared/schemas/v*
+That gate earlier failed on test_all_catalogue_types_construct_and_validate while ruff/isort were rewriting command module imports mid-run.
+
 Re-ran after formatting finished: 17 command tests passed (~98.75% coverage) and 263 full-suite tests passed. The Command Protocol Library gates are green.
 
 please give commands for Agent 07.5
@@ -39853,615 +39853,615 @@ This produces professional specification documents of around **10–20 pages eac
 
 ## User
 
-You are the Principal Distributed Systems Architect for the RaceVision project.
-
-=========================================================
-CURRENT PROJECT STATUS
-=========================================================
-
-The following implementation phases are COMPLETE.
-
-✓ Repository Architecture
-✓ Enterprise Architecture
-✓ Software Requirements Specification (SRS)
-✓ System Architecture Specification (SAS)
-✓ Database Design Specification (DDS)
-✓ API & Protocol Specification
-✓ Configuration & Environment Layer
-✓ PostgreSQL Foundation
-✓ Database Runtime
-✓ ORM Layer
-✓ Repository Layer
-✓ Unit Of Work
-✓ Query Objects
-✓ Alembic Migration System
-✓ Database QA & Release Pipeline
-✓ Development Platform & CI/CD
-
-These implementations are the single source of truth.
-
-Do NOT replace them.
-
-Do NOT recreate them.
-
-Integrate with them.
-
-=========================================================
-PRIMARY OBJECTIVE
-=========================================================
-
-Build the Shared Protocol Foundation.
-
-This becomes the communication language used by every subsystem.
-
-Every future module MUST communicate through these protocols.
-
-No subsystem is allowed to invent its own message format.
-
-=========================================================
-NON-GOALS
-=========================================================
-
-Do NOT implement
-
-Telemetry
-
-Collectors
-
-Replay
-
-Database Logic
-
-ORM
-
-Repositories
-
-Unity Logic
-
-OBS Logic
-
-REST APIs
-
-FastAPI
-
-WebSockets
-
-AI
-
-Streaming
-
-Business Logic
-
-Only build protocol definitions and infrastructure.
-
-=========================================================
-DIRECTORY STRUCTURE
-=========================================================
-
-Use the existing architecture.
-
-Create only if missing.
-
-shared/
-
-protocols/
-
-base/
-
-common/
-
-metadata/
-
-interfaces/
-
-validation/
-
-versioning/
-
-serialization/
-
-docs/
-
-Do not duplicate folders.
-
-=========================================================
-STEP 1
-PROTOCOL ARCHITECTURE
-=========================================================
-
-Design the protocol architecture.
-
-Document
-
-Protocol lifecycle
-
-Inheritance
-
-Validation flow
-
-Serialization flow
-
-Versioning
-
-Compatibility
-
-Future schema evolution
-
-Future binary formats
-
-Future network transport
-
-The protocol layer must be transport independent.
-
-It must work with
-
-WebSocket
-
-REST
-
-Message Queue
-
-Replay
-
-File Storage
-
-Database
-
-Unity
-
-OBS
-
-AI
-
-without modification.
-
-=========================================================
-STEP 2
-BASE MESSAGE
-=========================================================
-
-Create the root protocol object.
-
-BaseMessage
-
-Every protocol inherits from this.
-
-Include
-
-Message ID
-
-Correlation ID
-
-Session ID
-
-Race ID
-
-Protocol Version
-
-Message Type
-
-Timestamp (UTC)
-
-Sequence Number
-
-Priority
-
-Source
-
-Destination
-
-Checksum placeholder
-
-Compression placeholder
-
-Metadata
-
-Extensions
-
-=========================================================
-STEP 3
-PROTOCOL METADATA
-=========================================================
-
-Create reusable metadata classes.
-
-Examples
-
-MessageMetadata
-
-ProtocolVersion
-
-MessagePriority
-
-MessageSource
-
-MessageDestination
-
-CompressionType
-
-EncodingType
-
-DeliveryGuarantee
-
-ReliabilityLevel
-
-Environment
-
-BuildInformation
-
-Future compatibility flags
-
-=========================================================
-STEP 4
-COMMON IDENTIFIERS
-=========================================================
-
-Create strongly typed identifiers.
-
-DriverID
-
-TeamID
-
-CarID
-
-TrackID
-
-SessionID
-
-RaceID
-
-LapID
-
-SectorID
-
-ReplayID
-
-CameraID
-
-ViewerID
-
-StreamID
-
-AudioChannelID
-
-WeatherID
-
-No magic strings.
-
-=========================================================
-STEP 5
-ENUMERATIONS
-=========================================================
-
-Create shared enumerations.
-
-MessageType
-
-ProtocolVersion
-
-Priority
-
-SessionType
-
-TrackStatus
-
-FlagStatus
-
-WeatherType
-
-CameraMode
-
-AudioMode
-
-ReplayState
-
-VehicleState
-
-StreamingPlatform
-
-OBSState
-
-UnityState
-
-AIState
-
-SerializationFormat
-
-CompressionAlgorithm
-
-=========================================================
-STEP 6
-INTERFACES
-=========================================================
-
-Create protocol interfaces.
-
-ProtocolMessage
-
-ProtocolCommand
-
-ProtocolEvent
-
-ProtocolResponse
-
-ProtocolError
-
-ProtocolSerializable
-
-ProtocolVersioned
-
-ProtocolValidatable
-
-ProtocolCloneable
-
-No implementations.
-
-Interfaces only.
-
-=========================================================
-STEP 7
-VERSIONING
-=========================================================
-
-Implement protocol version support.
-
-Support
-
-Semantic Versioning
-
-Compatibility Matrix
-
-Deprecated Messages
-
-Future Versions
-
-Experimental Messages
-
-Version Negotiation
-
-Version Validation
-
-Protocol Capabilities
-
-=========================================================
-STEP 8
-VALIDATION
-=========================================================
-
-Create validation infrastructure.
-
-ValidationResult
-
-ValidationError
-
-ValidationSeverity
-
-Validator Interface
-
-Message Validator
-
-Protocol Validator
-
-No business validation.
-
-Only protocol validation.
-
-=========================================================
-STEP 9
-SERIALIZATION
-=========================================================
-
-Create serialization abstraction.
-
-No JSON implementation.
-
-Only interfaces.
-
-Support future
-
-JSON
-
-MessagePack
-
-Protocol Buffers
-
-Binary
-
-FlatBuffers
-
-Compressed Binary
-
-=========================================================
-STEP 10
-PROTOCOL REGISTRY
-=========================================================
-
-Create a registry.
-
-Responsibilities
-
-Protocol Discovery
-
-Registration
-
-Lookup
-
-Version Resolution
-
-Compatibility Checks
-
-Metadata Lookup
-
-Future Plugin Registration
-
-=========================================================
-STEP 11
-MESSAGE FACTORY
-=========================================================
-
-Create a protocol factory.
-
-Responsibilities
-
-Message Creation
-
-Validation
-
-Version Selection
-
-Metadata Population
-
-Future Dynamic Registration
-
-No transport code.
-
-=========================================================
-STEP 12
-DEPENDENCY INJECTION
-=========================================================
-
-Everything must support constructor injection.
-
-No global mutable state.
-
-No singleton registry.
-
-=========================================================
-STEP 13
-TESTING
-=========================================================
-
-Create comprehensive tests.
-
-Inheritance
-
-Metadata
-
-Versioning
-
-Validation
-
-Registry
-
-Factory
-
-Identifiers
-
-Enums
-
-Serialization Interfaces
-
-Coverage target
-
-95%+
-
-=========================================================
-STEP 14
-DOCUMENTATION
-=========================================================
-
-Create
-
-docs/specifications/
-
-SharedProtocolFoundationSpecification.md
-
-Update
-
-shared/protocols/README.md
-
-Document
-
-Architecture
-
-Inheritance
-
-Message Lifecycle
-
-Versioning
-
-Validation
-
-Registry
-
-Factory
-
-Transport Independence
-
-Future Expansion
-
-=========================================================
-CODING STANDARDS
-=========================================================
-
-Python 3.11
-
-PEP8
-
-SOLID
-
-Dependency Injection
-
-Type Hints
-
-Dataclasses where appropriate
-
-Pydantic v2 where appropriate
-
-No duplicated code
-
-No business logic
-
-Enterprise Quality
-
-=========================================================
-OUTPUT REPORT
-=========================================================
-
-Produce a detailed report.
-
-Include
-
-Files Created
-
-Files Updated
-
-Classes
-
-Interfaces
-
-Enums
-
-Identifiers
-
-Factories
-
-Registry
-
-Validation
-
-Versioning
-
-Tests
-
-Coverage
-
-Architecture Decisions
-
-Known Limitations
-
-Future Recommendations
-
-=========================================================
-SUCCESS CRITERIA
-=========================================================
-
-RaceVision possesses a transport-independent Shared Protocol Foundation.
-
-Every future subsystem (Telemetry, Replay, Unity, OBS, AI, Database, Web Dashboard, VR, Streaming, APIs, Mobile Applications) MUST build upon these protocol contracts.
-
-No application features are implemented.
-
+You are the Principal Distributed Systems Architect for the RaceVision project.
+
+=========================================================
+CURRENT PROJECT STATUS
+=========================================================
+
+The following implementation phases are COMPLETE.
+
+✓ Repository Architecture
+✓ Enterprise Architecture
+✓ Software Requirements Specification (SRS)
+✓ System Architecture Specification (SAS)
+✓ Database Design Specification (DDS)
+✓ API & Protocol Specification
+✓ Configuration & Environment Layer
+✓ PostgreSQL Foundation
+✓ Database Runtime
+✓ ORM Layer
+✓ Repository Layer
+✓ Unit Of Work
+✓ Query Objects
+✓ Alembic Migration System
+✓ Database QA & Release Pipeline
+✓ Development Platform & CI/CD
+
+These implementations are the single source of truth.
+
+Do NOT replace them.
+
+Do NOT recreate them.
+
+Integrate with them.
+
+=========================================================
+PRIMARY OBJECTIVE
+=========================================================
+
+Build the Shared Protocol Foundation.
+
+This becomes the communication language used by every subsystem.
+
+Every future module MUST communicate through these protocols.
+
+No subsystem is allowed to invent its own message format.
+
+=========================================================
+NON-GOALS
+=========================================================
+
+Do NOT implement
+
+Telemetry
+
+Collectors
+
+Replay
+
+Database Logic
+
+ORM
+
+Repositories
+
+Unity Logic
+
+OBS Logic
+
+REST APIs
+
+FastAPI
+
+WebSockets
+
+AI
+
+Streaming
+
+Business Logic
+
+Only build protocol definitions and infrastructure.
+
+=========================================================
+DIRECTORY STRUCTURE
+=========================================================
+
+Use the existing architecture.
+
+Create only if missing.
+
+shared/
+
+protocols/
+
+base/
+
+common/
+
+metadata/
+
+interfaces/
+
+validation/
+
+versioning/
+
+serialization/
+
+docs/
+
+Do not duplicate folders.
+
+=========================================================
+STEP 1
+PROTOCOL ARCHITECTURE
+=========================================================
+
+Design the protocol architecture.
+
+Document
+
+Protocol lifecycle
+
+Inheritance
+
+Validation flow
+
+Serialization flow
+
+Versioning
+
+Compatibility
+
+Future schema evolution
+
+Future binary formats
+
+Future network transport
+
+The protocol layer must be transport independent.
+
+It must work with
+
+WebSocket
+
+REST
+
+Message Queue
+
+Replay
+
+File Storage
+
+Database
+
+Unity
+
+OBS
+
+AI
+
+without modification.
+
+=========================================================
+STEP 2
+BASE MESSAGE
+=========================================================
+
+Create the root protocol object.
+
+BaseMessage
+
+Every protocol inherits from this.
+
+Include
+
+Message ID
+
+Correlation ID
+
+Session ID
+
+Race ID
+
+Protocol Version
+
+Message Type
+
+Timestamp (UTC)
+
+Sequence Number
+
+Priority
+
+Source
+
+Destination
+
+Checksum placeholder
+
+Compression placeholder
+
+Metadata
+
+Extensions
+
+=========================================================
+STEP 3
+PROTOCOL METADATA
+=========================================================
+
+Create reusable metadata classes.
+
+Examples
+
+MessageMetadata
+
+ProtocolVersion
+
+MessagePriority
+
+MessageSource
+
+MessageDestination
+
+CompressionType
+
+EncodingType
+
+DeliveryGuarantee
+
+ReliabilityLevel
+
+Environment
+
+BuildInformation
+
+Future compatibility flags
+
+=========================================================
+STEP 4
+COMMON IDENTIFIERS
+=========================================================
+
+Create strongly typed identifiers.
+
+DriverID
+
+TeamID
+
+CarID
+
+TrackID
+
+SessionID
+
+RaceID
+
+LapID
+
+SectorID
+
+ReplayID
+
+CameraID
+
+ViewerID
+
+StreamID
+
+AudioChannelID
+
+WeatherID
+
+No magic strings.
+
+=========================================================
+STEP 5
+ENUMERATIONS
+=========================================================
+
+Create shared enumerations.
+
+MessageType
+
+ProtocolVersion
+
+Priority
+
+SessionType
+
+TrackStatus
+
+FlagStatus
+
+WeatherType
+
+CameraMode
+
+AudioMode
+
+ReplayState
+
+VehicleState
+
+StreamingPlatform
+
+OBSState
+
+UnityState
+
+AIState
+
+SerializationFormat
+
+CompressionAlgorithm
+
+=========================================================
+STEP 6
+INTERFACES
+=========================================================
+
+Create protocol interfaces.
+
+ProtocolMessage
+
+ProtocolCommand
+
+ProtocolEvent
+
+ProtocolResponse
+
+ProtocolError
+
+ProtocolSerializable
+
+ProtocolVersioned
+
+ProtocolValidatable
+
+ProtocolCloneable
+
+No implementations.
+
+Interfaces only.
+
+=========================================================
+STEP 7
+VERSIONING
+=========================================================
+
+Implement protocol version support.
+
+Support
+
+Semantic Versioning
+
+Compatibility Matrix
+
+Deprecated Messages
+
+Future Versions
+
+Experimental Messages
+
+Version Negotiation
+
+Version Validation
+
+Protocol Capabilities
+
+=========================================================
+STEP 8
+VALIDATION
+=========================================================
+
+Create validation infrastructure.
+
+ValidationResult
+
+ValidationError
+
+ValidationSeverity
+
+Validator Interface
+
+Message Validator
+
+Protocol Validator
+
+No business validation.
+
+Only protocol validation.
+
+=========================================================
+STEP 9
+SERIALIZATION
+=========================================================
+
+Create serialization abstraction.
+
+No JSON implementation.
+
+Only interfaces.
+
+Support future
+
+JSON
+
+MessagePack
+
+Protocol Buffers
+
+Binary
+
+FlatBuffers
+
+Compressed Binary
+
+=========================================================
+STEP 10
+PROTOCOL REGISTRY
+=========================================================
+
+Create a registry.
+
+Responsibilities
+
+Protocol Discovery
+
+Registration
+
+Lookup
+
+Version Resolution
+
+Compatibility Checks
+
+Metadata Lookup
+
+Future Plugin Registration
+
+=========================================================
+STEP 11
+MESSAGE FACTORY
+=========================================================
+
+Create a protocol factory.
+
+Responsibilities
+
+Message Creation
+
+Validation
+
+Version Selection
+
+Metadata Population
+
+Future Dynamic Registration
+
+No transport code.
+
+=========================================================
+STEP 12
+DEPENDENCY INJECTION
+=========================================================
+
+Everything must support constructor injection.
+
+No global mutable state.
+
+No singleton registry.
+
+=========================================================
+STEP 13
+TESTING
+=========================================================
+
+Create comprehensive tests.
+
+Inheritance
+
+Metadata
+
+Versioning
+
+Validation
+
+Registry
+
+Factory
+
+Identifiers
+
+Enums
+
+Serialization Interfaces
+
+Coverage target
+
+95%+
+
+=========================================================
+STEP 14
+DOCUMENTATION
+=========================================================
+
+Create
+
+docs/specifications/
+
+SharedProtocolFoundationSpecification.md
+
+Update
+
+shared/protocols/README.md
+
+Document
+
+Architecture
+
+Inheritance
+
+Message Lifecycle
+
+Versioning
+
+Validation
+
+Registry
+
+Factory
+
+Transport Independence
+
+Future Expansion
+
+=========================================================
+CODING STANDARDS
+=========================================================
+
+Python 3.11
+
+PEP8
+
+SOLID
+
+Dependency Injection
+
+Type Hints
+
+Dataclasses where appropriate
+
+Pydantic v2 where appropriate
+
+No duplicated code
+
+No business logic
+
+Enterprise Quality
+
+=========================================================
+OUTPUT REPORT
+=========================================================
+
+Produce a detailed report.
+
+Include
+
+Files Created
+
+Files Updated
+
+Classes
+
+Interfaces
+
+Enums
+
+Identifiers
+
+Factories
+
+Registry
+
+Validation
+
+Versioning
+
+Tests
+
+Coverage
+
+Architecture Decisions
+
+Known Limitations
+
+Future Recommendations
+
+=========================================================
+SUCCESS CRITERIA
+=========================================================
+
+RaceVision possesses a transport-independent Shared Protocol Foundation.
+
+Every future subsystem (Telemetry, Replay, Unity, OBS, AI, Database, Web Dashboard, VR, Streaming, APIs, Mobile Applications) MUST build upon these protocol contracts.
+
+No application features are implemented.
+
 Only the enterprise protocol foundation is delivered.
 
 Please put into the the format above please
