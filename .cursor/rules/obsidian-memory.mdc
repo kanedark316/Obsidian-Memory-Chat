@@ -1,0 +1,16 @@
+---
+description: Use Obsidian ChatGPT-Memory notes when recalling prior chat context
+alwaysApply: true
+---
+
+# Obsidian Memory Chat
+
+Long-term ChatGPT memory lives in this vault under `ChatGPT-Memory/`.
+
+When the user asks you to recall prior decisions, preferences, designs, or chat context:
+
+1. Search and read notes under `ChatGPT-Memory/` (start with `Index.md`).
+2. Prefer those notes over guessing.
+3. Cite the note filename (e.g. `05-10-2026-Live-F1-Tracking-Data.md`) when you use it.
+
+Do not call any ChatGPT / OpenAI API for this memory. Cursor only reads local vault files.

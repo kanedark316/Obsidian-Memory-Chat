@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import sys
+from importlib import resources
 from pathlib import Path
 from typing import Any
 
@@ -19,7 +21,48 @@ from chatgpt_obsidian_memory.normalize import (
 from chatgpt_obsidian_memory.share import ShareImportError, import_share_url
 from chatgpt_obsidian_memory.vault import list_notes, write_transcript
 
-UI_HTML = Path(__file__).with_name("static").joinpath("index.html")
+def _load_ui_html() -> str:
+    """Load index.html from editable install, wheel, PyInstaller bundle, or source tree."""
+    candidates: list[Path] = [
+        Path(__file__).parent / "static" / "index.html",
+    ]
+
+    # PyInstaller onefile extracts datas under sys._MEIPASS
+    meipass = getattr(sys, "_MEIPASS", None)
+    if meipass:
+        candidates.append(
+            Path(meipass) / "chatgpt_obsidian_memory" / "web" / "static" / "index.html"
+        )
+        candidates.append(Path(meipass) / "static" / "index.html")
+
+    try:
+        static_pkg = resources.files("chatgpt_obsidian_memory.web.static")
+        candidates.append(Path(str(static_pkg.joinpath("index.html"))))
+    except (ModuleNotFoundError, TypeError, FileNotFoundError, AttributeError):
+        pass
+
+    # Running from repo root without editable install
+    for parent in Path(__file__).resolve().parents:
+        repo_candidate = (
+            parent / "src" / "chatgpt_obsidian_memory" / "web" / "static" / "index.html"
+        )
+        if repo_candidate not in candidates:
+            candidates.append(repo_candidate)
+        if (parent / "pyproject.toml").exists():
+            break
+
+    for path in candidates:
+        try:
+            if path.is_file():
+                return path.read_text(encoding="utf-8")
+        except OSError:
+            continue
+
+    searched = "\n".join(f"  - {p}" for p in candidates)
+    raise HTTPException(
+        status_code=500,
+        detail=f"UI missing (index.html not found). Searched:\n{searched}",
+    )
 
 
 class PasteRequest(BaseModel):
@@ -148,9 +191,6 @@ def create_app(config: AppConfig | None = None) -> FastAPI:
 
     @app.get("/", response_class=HTMLResponse)
     def index() -> HTMLResponse:
-        html_path = Path(__file__).parent / "static" / "index.html"
-        if not html_path.exists():
-            raise HTTPException(status_code=500, detail="UI missing")
-        return HTMLResponse(html_path.read_text(encoding="utf-8"))
+        return HTMLResponse(_load_ui_html())
 
     return app

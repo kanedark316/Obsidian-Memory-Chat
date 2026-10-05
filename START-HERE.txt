@@ -1,0 +1,20 @@
+Obsidian Memory Chat — extract and run
+======================================
+
+1. Extract this zip into:
+   C:\Users\shash\.cursor-tutor\Obsidian Memory Chat\
+
+2. Double-click:
+   Start Obsidian Memory Chat.bat
+
+3. Browser opens at http://127.0.0.1:8765
+   Leave the black window open while using the app.
+
+Notes save to:
+   ChatGPT-Memory\
+
+Optional: build a real .exe (once):
+   powershell -ExecutionPolicy Bypass -File .\scripts\build-windows-exe.ps1
+   then double-click ObsidianMemoryChat.exe
+
+Requires Python 3.11+ installed with "Add to PATH".

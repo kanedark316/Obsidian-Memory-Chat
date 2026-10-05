@@ -10,26 +10,43 @@ Local-only tool that saves ChatGPT conversations you choose into an **Obsidian**
 
 Cursor connects only to your Obsidian vault (files). Share import only fetches the **public share page you create** — it does not log into ChatGPT or use paid APIs.
 
+## Run with one double-click (Windows)
+
+1. Open the project folder in File Explorer.
+2. Double-click **`Start Obsidian Memory Chat.bat`**
+3. Wait for the browser to open at http://127.0.0.1:8765
+4. Leave the black window open while you use the app (close it to stop).
+
+### Optional: build a real `.exe`
+
+Once on your PC (needs Python installed):
+
+```powershell
+cd "$env:USERPROFILE\.cursor-tutor\Obsidian Memory Chat"
+powershell -ExecutionPolicy Bypass -File .\scripts\build-windows-exe.ps1
+```
+
+Then double-click **`ObsidianMemoryChat.exe`**. Notes still save under `ChatGPT-Memory\` next to the project.
+
 ## Recommended Windows layout
 
 ```text
-C:\Users\shash\.cursor-tutor\Obsidian Memory Chat\
-  (app source — this repo)
-  ChatGPT-Memory\          ← imported .md notes (also used as vault subfolder)
+%USERPROFILE%\.cursor-tutor\Obsidian Memory Chat\
+  Start Obsidian Memory Chat.bat
+  ObsidianMemoryChat.exe   ← after you build it
+  ChatGPT-Memory\          ← imported .md notes
 ```
 
-Point the app at this folder as the vault (notes go into `ChatGPT-Memory\` inside it):
+Manual CLI (if you prefer):
 
 ```powershell
-cd "C:\Users\shash\.cursor-tutor\Obsidian Memory Chat"
+cd "$env:USERPROFILE\.cursor-tutor\Obsidian Memory Chat"
 python -m venv .venv
 .\.venv\Scripts\activate
 pip install -e ".[dev]"
-chatgpt-obsidian-memory config set-vault "C:\Users\shash\.cursor-tutor\Obsidian Memory Chat"
+chatgpt-obsidian-memory config set-vault "$env:USERPROFILE\.cursor-tutor\Obsidian Memory Chat"
 chatgpt-obsidian-memory serve
 ```
-
-Then open http://127.0.0.1:8765
 
 ## Requirements
 
@@ -114,7 +131,7 @@ url: https://chatgpt.com/share/...
 
 ## Connect Cursor to Obsidian
 
-1. Open `C:\Users\shash\.cursor-tutor\Obsidian Memory Chat` (or your vault) in Cursor.
+1. Open `%USERPROFILE%\.cursor-tutor\Obsidian Memory Chat` (or your vault) in Cursor.
 2. Copy [`templates/cursor-rule.mdc`](templates/cursor-rule.mdc) into `.cursor/rules/`.
 3. Optionally paste [`templates/agents-memory.md`](templates/agents-memory.md) into `AGENTS.md`.
 
