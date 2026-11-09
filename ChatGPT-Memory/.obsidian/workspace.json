@@ -10,33 +10,51 @@
           {
             "id": "87f81d5aba3c607f",
             "type": "leaf",
+            "pinned": true,
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Index.md",
+                "file": "ChatGPT-Memory/Index.md",
                 "mode": "source",
                 "source": false
               },
+              "pinned": true,
               "icon": "lucide-file",
               "title": "Index"
             }
           },
           {
-            "id": "aa4a80a31f6d816a",
+            "id": "71cd4171bdd2711c",
+            "type": "leaf",
+            "pinned": true,
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "OpenCode.md",
+                "mode": "source",
+                "source": false
+              },
+              "pinned": true,
+              "icon": "lucide-file",
+              "title": "OpenCode"
+            }
+          },
+          {
+            "id": "fd2b8c9aa7694125",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Index.md",
+                "file": "o.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Index"
+              "title": "o"
             }
           }
         ],
-        "currentTab": 1
+        "currentTab": 2
       }
     ],
     "direction": "vertical"
@@ -49,21 +67,6 @@
         "id": "7130e5ae881d31eb",
         "type": "tabs",
         "children": [
-          {
-            "id": "1f13369705a5a495",
-            "type": "leaf",
-            "state": {
-              "type": "file-explorer",
-              "state": {
-                "sortOrder": "alphabetical",
-                "autoReveal": true,
-                "showSearch": false,
-                "searchQuery": ""
-              },
-              "icon": "lucide-folder-closed",
-              "title": "Files"
-            }
-          },
           {
             "id": "a9bb5c8fc7c03de2",
             "type": "leaf",
@@ -93,8 +96,24 @@
               "icon": "lucide-bookmark",
               "title": "Bookmarks"
             }
+          },
+          {
+            "id": "8fe57b5887f75ef0",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
           }
-        ]
+        ],
+        "currentTab": 2
       }
     ],
     "direction": "horizontal",
@@ -203,19 +222,37 @@
       "bases:Create new base": false
     }
   },
-  "active": "1f13369705a5a495",
+  "active": "8fe57b5887f75ef0",
   "lastOpenFiles": [
-    "05-10-2026-F1-Tracking-Project-Overview1.md",
-    "Index.md",
-    "05-10-2026-F1-Project-6.md",
-    "05-10-2026-F1-Project-5.md",
-    "05-10-2026-F1-Project-4.md",
-    "05-10-2026-F1-Project-3.md",
-    "05-10-2026-F1-Project-2.md",
-    "05-10-2026-Racevision-F1-Project.md",
-    "05-10-2026-Live-F1-Tracking-Data.md",
-    "05-10-2026-F1-Tracking-Project-Overview.md",
-    "05-10-2026-F1-Tracking-And-Project.md",
+    "OpenCode.md",
+    "ChatGPT-Memory/03-11-2026-F1-3D-Viewer-LivePage.md",
+    "ChatGPT-Memory/03-11-2026-F1-3D-Viewer-Operations.md",
+    "ChatGPT-Memory/03-11-2026-F1-3D-Viewer-Open-Threads.md",
+    "ChatGPT-Memory/03-11-2026-F1-3D-Viewer-AC-Research.md",
+    "ChatGPT-Memory/03-11-2026-F1-3D-Viewer-Mexico-Track-Pipeline.md",
+    "ChatGPT-Memory/03-11-2026-F1-3D-Viewer-Car-Rebuild.md",
+    "ChatGPT-Memory/03-11-2026-F1-3D-Viewer-Telemetry.md",
+    "ChatGPT-Memory/03-11-2026-F1-3D-Viewer-Overview.md",
+    "ChatGPT-Memory/03-11-2026-F1-3D-Viewer-Architecture.md",
+    "o.md",
+    "Untitled",
+    "ChatGPT-Memory/Index.md",
+    "Untitled 1.canvas",
+    "Untitled 3.canvas",
+    "Untitled 4.canvas",
+    "nmnbmbn",
+    "Untitled 2.canvas",
+    "Untitled.canvas",
+    "ChatGPT-Memory/05-10-2026-F1-Tracking-Project-Overview1.md",
+    "ChatGPT-Memory/05-10-2026-F1-Project-6.md",
+    "ChatGPT-Memory/05-10-2026-F1-Project-5.md",
+    "ChatGPT-Memory/05-10-2026-F1-Project-4.md",
+    "ChatGPT-Memory/05-10-2026-F1-Project-3.md",
+    "ChatGPT-Memory/05-10-2026-F1-Project-2.md",
+    "ChatGPT-Memory/05-10-2026-Racevision-F1-Project.md",
+    "ChatGPT-Memory/05-10-2026-Live-F1-Tracking-Data.md",
+    "ChatGPT-Memory/05-10-2026-F1-Tracking-Project-Overview.md",
+    "ChatGPT-Memory/05-10-2026-F1-Tracking-And-Project.md",
     "ChatGPT-Memory"
   ]
 }
